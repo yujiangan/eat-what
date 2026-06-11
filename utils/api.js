@@ -11,7 +11,7 @@ const API_CONFIG = {
   baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
   imageBaseUrl:
     "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation",
-  textModel: "qwen-turbo",
+  textModel: "qwen3.6-flash",
   visionModel: "qwen3-vl-plus",
   imageModel: "z-image-turbo",
   timeout: 15000,
@@ -33,6 +33,20 @@ const SYSTEM_PROMPT = `你是专业的美食推荐助手。根据用户的历史
 
 // 图片缓存相关
 const IMAGE_CACHE_KEY = "DishImageCache";
+const IMAGE_URL_EXPIRE_BUFFER_MS = 10 * 60 * 1000;
+
+function getImageUrlExpiresAt(imageUrl) {
+  if (!imageUrl || typeof imageUrl !== "string") return 0;
+  const match = imageUrl.match(/[?&]Expires=(\d+)/);
+  if (!match) return 0;
+  return Number(match[1]) * 1000;
+}
+
+function isImageUrlExpired(imageUrl) {
+  const expiresAt = getImageUrlExpiresAt(imageUrl);
+  if (!expiresAt) return false;
+  return expiresAt <= Date.now() + IMAGE_URL_EXPIRE_BUFFER_MS;
+}
 
 // 获取图片缓存
 function getImageCache() {
@@ -50,7 +64,13 @@ function saveImageToCache(dishName, imageUrl) {
 // 从缓存获取图片URL
 function getImageFromCache(dishName) {
   const cache = getImageCache();
-  return cache[dishName] || null;
+  const imageUrl = cache[dishName] || null;
+  if (isImageUrlExpired(imageUrl)) {
+    delete cache[dishName];
+    wx.setStorageSync(IMAGE_CACHE_KEY, cache);
+    return null;
+  }
+  return imageUrl;
 }
 
 // 菜单识别系统提示词
@@ -127,7 +147,7 @@ function buildFoodRecommendContext(excludeDishes = []) {
 /**
  * 通用AI API调用函数
  *
- * @param {string} model - 使用的模型名称（如 qwen-turbo, qwen3-vl-plus）
+ * @param {string} model - 使用的模型名称（如 qwen3.6-flash, qwen3-vl-plus）
  * @param {string} prompt - 系统提示词（设定AI的身份和任务）
  * @param {string} userContent - 用户输入的内容
  * @param {boolean} isVision - 是否是视觉模式（用于图片识别）
@@ -327,6 +347,7 @@ module.exports = {
   foodRecommend: foodRecommend,
   menuRecognition: menuRecognition,
   getDishImage: getDishImage,
+  isImageUrlExpired: isImageUrlExpired,
   buildFoodRecommendContext: buildFoodRecommendContext,
   buildMenuContext: buildMenuContext,
 };

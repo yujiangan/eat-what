@@ -52,6 +52,10 @@ Page({
   // 获取历史记录中的菜品图片
   getDishImageForHistory(savedEmoji: string): string {
     if (savedEmoji && (savedEmoji.startsWith('http') || savedEmoji.startsWith('https'))) {
+      const api = require('../../utils/api.js');
+      if (api.isImageUrlExpired && api.isImageUrlExpired(savedEmoji)) {
+        return '';
+      }
       return savedEmoji;
     }
     return '';

@@ -91,18 +91,6 @@
     </block>
   </view>
 
-  <!-- 权限拒绝弹窗 -->
-  <view class="modal-mask {{showPermissionModal ? 'show' : ''}}">
-    <view class="modal-content">
-      <text class="modal-title">需要授权</text>
-      <text class="modal-desc">需开启相机/相册权限才能上传，是否前往设置？</text>
-      <view class="modal-buttons">
-        <view class="modal-btn cancel" bindtap="onCancelPermissionTap">取消</view>
-        <view class="modal-btn confirm" bindtap="onGoSettingsTap">前往设置</view>
-      </view>
-    </view>
-  </view>
-
   <!-- 错误提示弹窗 -->
   <view class="modal-mask {{showErrorModal ? 'show' : ''}}">
     <view class="modal-content">

@@ -1,3 +1,7 @@
+const MENU_IMAGE_MAX_SIZE = 5 * 1024 * 1024;
+const MENU_IMAGE_MAX_COMPRESS_TIMES = 3;
+const MENU_IMAGE_COMPRESS_QUALITIES = [80, 60, 40];
+
 // 菜单管理页面 - 上传菜单图片并识别菜品
 Page({
   // 页面数据
@@ -6,7 +10,6 @@ Page({
     menuList: [] as any[],                // 已保存的菜单列表
     showLoading: false,                   // 识别中显示加载
     showResult: false,                    // 显示识别结果
-    showPermissionModal: false,           // 权限申请弹窗
     showErrorModal: false,                // 错误弹窗
     showSuccessToast: false,              // 成功提示
     tempImagePath: '',                    // 临时图片路径（识别前）
@@ -61,31 +64,7 @@ Page({
 
   // 点击上传菜单按钮
   onUploadTap() {
-    wx.getSetting({
-      success: (res) => {
-        if (res.authSetting['scope.writePhotosAlbum'] || res.authSetting['scope.camera']) {
-          this.chooseImageFile();
-        } else {
-          this.requestPermission();
-        }
-      },
-      fail: () => {
-        this.requestPermission();
-      }
-    });
-  },
-
-  // 请求相册权限
-  requestPermission() {
-    wx.authorize({
-      scope: 'scope.writePhotosAlbum',
-      success: () => {
-        this.chooseImageFile();
-      },
-      fail: () => {
-        this.setData({ showPermissionModal: true });
-      }
-    });
+    this.chooseImageFile();
   },
 
   // 选择图片
@@ -100,21 +79,36 @@ Page({
       sourceType: ['album', 'camera'],
       success: (res) => {
         const tempPath = res.tempFiles[0].tempFilePath;
+        this.setData({
+          tempImagePath: tempPath,
+          showLoading: true,
+          showErrorModal: false,
+          errorMessage: ''
+        });
         this.checkImage(tempPath);
+      },
+      fail: (err) => {
+        if (err.errMsg && err.errMsg.indexOf('cancel') !== -1) return;
+        this.setData({
+          showLoading: false,
+          showErrorModal: true,
+          errorMessage: '选择图片或拍照失败，请重试'
+        });
       }
     });
   },
 
   // 检查图片大小
-  checkImage(imagePath: string) {
+  checkImage(imagePath: string, compressCount: number = 0) {
     const fs = wx.getFileSystemManager();
     fs.getFileInfo({
       filePath: imagePath,
       success: (res) => {
         const size = res.size;
-        // 如果图片大于 500KB，先压缩
-        if (size > 500 * 1024) {
-          this.compressImage(imagePath);
+        if (size > MENU_IMAGE_MAX_SIZE && compressCount < MENU_IMAGE_MAX_COMPRESS_TIMES) {
+          this.compressImage(imagePath, compressCount);
+        } else if (size > MENU_IMAGE_MAX_SIZE) {
+          this.showImageTooLargeError();
         } else {
           this.processImage(imagePath);
         }
@@ -126,17 +120,25 @@ Page({
   },
 
   // 压缩图片
-  compressImage(imagePath: string) {
+  compressImage(imagePath: string, compressCount: number) {
+    const quality = MENU_IMAGE_COMPRESS_QUALITIES[compressCount] || 40;
     wx.compressImage({
       src: imagePath,
-      quality: 70,
+      quality,
       success: (res) => {
-        this.checkImage(res.tempFilePath);
+        this.checkImage(res.tempFilePath, compressCount + 1);
       },
       fail: () => {
-        // 压缩失败也尝试处理原图
-        this.processImage(imagePath);
+        this.showImageTooLargeError();
       }
+    });
+  },
+
+  showImageTooLargeError() {
+    this.setData({
+      showLoading: false,
+      showErrorModal: true,
+      errorMessage: '图片过大，请换一张 5MB 以内的图片，或先裁剪后再上传'
     });
   },
 
@@ -297,17 +299,6 @@ Page({
     const newMenuList = menuList.filter((item: any) => item.id !== id);
     wx.setStorageSync('SavedMenuList', newMenuList);
     this.setData({ menuList: newMenuList });
-  },
-
-  // 拒绝权限
-  onCancelPermissionTap() {
-    this.setData({ showPermissionModal: false });
-  },
-
-  // 打开系统设置
-  onGoSettingsTap() {
-    this.setData({ showPermissionModal: false });
-    wx.openSetting();
   },
 
   // 关闭错误弹窗
