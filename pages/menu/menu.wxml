@@ -7,7 +7,7 @@
   <!-- 上传菜单区域 -->
   <view class="upload-section" wx:if="{{!showResult}}">
     <view class="upload-tip">
-      <text class="tip-text">上传菜单优化 AI 推荐结果</text>
+      <text class="tip-text">上传菜单优化推荐结果</text>
     </view>
     <view class="upload-area {{showResult ? 'disabled' : ''}}" bindtap="{{showResult ? '' : 'onUploadTap'}}">
       <text class="upload-icon">📷</text>
@@ -22,14 +22,14 @@
       <view class="loading-spinner">
         <view class="spinner-circle"></view>
       </view>
-      <text class="loading-text">AI 正在识别菜单～</text>
+      <text class="loading-text">正在识别菜单～</text>
     </view>
   </view>
 
   <!-- 识别结果卡片 -->
   <view class="result-card" wx:if="{{showResult}}">
     <view class="result-header">
-      <text class="result-title">AI识别结果</text>
+      <text class="result-title">识别结果</text>
       <text class="result-subtitle">识别成功</text>
     </view>
     
@@ -86,7 +86,7 @@
       <view class="empty-state">
         <text class="empty-icon">📋</text>
         <text class="empty-text">还没有保存菜单</text>
-        <text class="empty-hint">上传菜单让AI更好地了解您的选择</text>
+        <text class="empty-hint">上传菜单让推荐更好地了解您的选择</text>
       </view>
     </block>
   </view>

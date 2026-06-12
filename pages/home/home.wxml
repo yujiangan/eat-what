@@ -5,13 +5,13 @@
     </view>
     <view class="banner-content">
       <text class="banner-title">今天吃什么</text>
-      <text class="banner-subtitle">AI 智能美食推荐</text>
+      <text class="banner-subtitle">智能美食推荐</text>
     </view>
   </view>
 
   <!-- AI智能推荐功能区域 -->
   <view class="feature-section">
-    <view class="feature-title">AI智能推荐</view>
+    <view class="feature-title">智能推荐</view>
 
     <!-- 三个实现步骤 -->
     <view class="steps">
@@ -22,7 +22,7 @@
       <view class="step-arrow">→</view>
       <view class="step">
         <text class="step-icon">🤔</text>
-        <text class="step-text">AI思考</text>
+        <text class="step-text">开始思考</text>
       </view>
       <view class="step-arrow">→</view>
       <view class="step">

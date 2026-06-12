@@ -233,12 +233,12 @@ function callAI(
               } catch (e2) {}
             }
 
-            reject(new Error("AI响应解析失败: " + rawContent));
+            reject(new Error("响应解析失败: " + rawContent));
           }
         } else {
           const errMsg =
             (res.data && res.data.error && res.data.error.message) ||
-            "AI调用失败";
+            "接口调用失败";
           reject(new Error(errMsg));
         }
       },

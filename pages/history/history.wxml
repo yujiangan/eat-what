@@ -50,7 +50,7 @@
     <view class="empty-state">
       <text class="empty-icon">📝</text>
       <text class="empty-text">暂无历史选择记录</text>
-      <text class="empty-hint">开始使用AI推荐功能，这里会显示您的选择历史</text>
+      <text class="empty-hint">开始使用推荐功能，这里会显示您的选择历史</text>
     </view>
   </block>
 

@@ -3,10 +3,10 @@
   <view class="intro-section">
     <view class="intro-header">
       <text class="intro-title">今天吃什么</text>
-      <text class="intro-subtitle">AI 智能美食推荐助手</text>
+      <text class="intro-subtitle">智能美食推荐助手</text>
     </view>
     <view class="intro-desc">
-      <text>让AI帮您解决"今天吃什么"的难题</text>
+      <text>帮您解决"今天吃什么"的难题</text>
     </view>
   </view>
 
@@ -17,8 +17,8 @@
     <view class="feature-card">
       <text class="feature-icon">🎲</text>
       <view class="feature-content">
-        <text class="feature-name">AI智能推荐</text>
-        <text class="feature-desc">点击骰子按钮，AI会根据当前时间、您的历史偏好等上下文信息，为您推荐最合适的美食选择。</text>
+        <text class="feature-name">智能推荐</text>
+        <text class="feature-desc">点击骰子按钮，系统会根据当前时间、您的历史偏好等上下文信息，为您推荐最合适的美食选择。</text>
       </view>
     </view>
 
@@ -26,7 +26,7 @@
       <text class="feature-icon">📷</text>
       <view class="feature-content">
         <text class="feature-name">菜单上传</text>
-        <text class="feature-desc">拍照或上传菜单截图，AI会自动识别菜品信息，帮助您建立个人菜单库。</text>
+        <text class="feature-desc">拍照或上传菜单截图，系统会自动识别菜品信息，帮助您建立个人菜单库。</text>
       </view>
     </view>
 

@@ -137,7 +137,7 @@ Page({
     const hasPreference = this.checkPreference();
     const hasMenu = this.checkMenu();
     
-    const finalLoadingText = 'AI 正在思考推荐方案～';
+    const finalLoadingText = '正在思考推荐方案～';
     
     // 第1步：分析时间
     this.setData({ loadingText: '正在分析当前时间...' });
